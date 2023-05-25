@@ -1,3 +1,4 @@
+</head>
 <body>
   <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
   <div style="display: flex; justify-content: flex-end; align-items: center; padding: 0 2%;">
@@ -6,7 +7,7 @@
   <table>
     <thead>
       <tr> 
-        <th>
+        <th class="search-header">
           <input type="text" id="searchBar" placeholder="Search" />
         </th>
         <th class="balance-header">Balance</th>
@@ -206,9 +207,11 @@ const coinNetworkMapping = {
                           const change24h = prices[coinNameMapping[balance.name]].usd_24h_change;
                           const marketCap = prices[coinNameMapping[balance.name]].usd_market_cap;
                           const value = balance.value * price;
+                          let coinSymbol = coinSymbolMapping[balance.name]; // Fetch coin symbol
                           for (let j = 0; j < 7; j++) {
                               const cell = document.createElement('td');
                               if (j === 0) {
+                                cell.classList.add('search-column'); // Add the class to the td element
                                   const icon = document.createElement('img');
                                   icon.src = `images/${coinNameMapping[balance.name]}.png`;
                                   icon.style.width = '40px';
@@ -218,16 +221,27 @@ const coinNetworkMapping = {
                                   cell.appendChild(icon);
                                   cell.appendChild(document.createTextNode(balance.name));
                               } else if (j === 1) {
-                                  if (Math.abs(balance.value) < 0.00001) {
-                                      // Balance is effectively zero
-                                      cell.textContent = "0";
-                                  } else if (Math.round(balance.value * 100000) / 100000 === balance.value) {
-                                      // Balance is effectively a whole number
-                                      cell.textContent = Number(balance.value).toLocaleString();
-                                  } else {
-                                      // Balance is not a whole number
-                                      cell.textContent = Number(balance.value).toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 5});
-                                  }
+                                cell.classList.add('balance-column'); // Add the class to the td element
+                                let coinSymbolSpan = document.createElement('span');
+                                coinSymbolSpan.textContent = " " + coinSymbol;
+                                coinSymbolSpan.style.color = '#8191ac'; // Set the desired color
+                                coinSymbolSpan.style.fontSize = '14px'; // Set the desired font size
+                                coinSymbolSpan.style.marginLeft = '6px'; // Set the desired left margin
+
+
+                                if (Math.abs(balance.value) < 0.00001) {
+                              // Balance is effectively zero
+                              cell.textContent = "0";
+                              } else if (Math.round(balance.value * 100000) / 100000 === balance.value) {
+                              // Balance is effectively a whole number
+                              cell.textContent = Number(balance.value).toLocaleString();
+                              } else {
+                              // Balance is not a whole number
+                              cell.textContent = Number(balance.value).toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 5});
+                              }
+
+                              // Append the coin symbol span to the cell
+                              cell.appendChild(coinSymbolSpan);
                               } else if (j === 2) {
                                   if (Math.abs(value) < 0.01) {
                                       // Value is effectively zero
@@ -632,3 +646,4 @@ placeholderAddress.addEventListener('click', async function() {
 
 
 </body>
+</html>
